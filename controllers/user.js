@@ -28,12 +28,15 @@ module.exports.createUser = (req, res, next) => {
 module.exports.getByIdUser = (req, res, next) => {
   User.findById(req.params.id)
     .orFail(() => {
-      res
-        .status(400)
-        .send({ message: "Пользователь по указанному _id не найден" });
+      res.status(400).send({ message: "Некорректный ID" });
     })
     .then((user) => res.status(200).send(user))
-    .catch(() => {
+    .catch((err) => {
+      if (err.name === "CastError") {
+        res
+          .status(404)
+          .send({ message: "Пользователь по указанному _id не найден" });
+      }
       res.status(500).send({ message: "Ошибка сервера" });
     })
     .catch(next);
