@@ -29,7 +29,7 @@ module.exports.getByIdUser = (req, res, next) => {
   User.findById(req.params.id)
     .orFail(() => {
       res
-        .status(404)
+        .status(400)
         .send({ message: "Пользователь по указанному _id не найден" });
     })
     .then((user) => res.status(200).send(user))
