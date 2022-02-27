@@ -11,7 +11,7 @@ module.exports.createCard = (req, res, next) => {
   const ownerId = req.user._id;
 
   Card.create({ name, link, owner: ownerId })
-    .then((dataCard) => res.status(201).send({ data: dataCard._id }))
+    .then((dataCard) => res.status(201).send({ id: dataCard._id }))
     .catch((err) => {
       if (err.name === "ValidationError") {
         res.status(400).send({
@@ -44,7 +44,10 @@ module.exports.likeCard = (req, res, next) => {
     { $addToSet: { likes: req.user._id } },
     { new: true }
   )
-    .then((dataCard) => res.status(200).send(dataCard))
+    .orFail(() => {
+      res.status(404).send({ message: "Некорректный ID" });
+    })
+    .then((dataCard) => res.status(200).send({ data: dataCard }))
     .catch((err) => {
       if (err.name === "ValidationError") {
         res.status(400).send({
