@@ -69,7 +69,7 @@ module.exports.editAvatar = (req, res, next) => {
   User.findByIdAndUpdate(
     id,
     { avatar },
-    { new: true, runValidators: true, upsert: true }
+    { new: true, runValidators: true, upsert: true },
   )
     .then((dataUser) => res.status(200).send(dataUser))
     .catch((err) => {
