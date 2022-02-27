@@ -1,14 +1,13 @@
 const Card = require('../models/Card');
-const { NotFound } = require('../errors/NotFound');
-const { BadRequest } = require('../errors/BadRequest');
-const { ServerError } = require('../errors/ServerError');
 
 module.exports.getAllCards = (req, res, next) => {
   Card.find({})
     .then((dataCards) => res.status(200).send(dataCards))
     .catch((err) => {
-      if (err.name === 'ServerError') {
-        throw new ServerError('Ошибка сервера');
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Некорректные данные' });
+      } else {
+        res.status(500).send({ message: 'Ошибка сервера' });
       }
     })
     .finally(next);
@@ -21,11 +20,10 @@ module.exports.createCard = (req, res, next) => {
   Card.create({ name, link, owner: ownerId })
     .then((dataCard) => res.status(201).send(dataCard))
     .catch((err) => {
-      if (err.name === 'BadRequest') {
-        throw new BadRequest('Не корректные данные');
-      }
-      if (err.name === 'ServerError') {
-        throw new ServerError('Ошибка сервера');
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Некорректные данные' });
+      } else {
+        res.status(500).send({ message: 'Ошибка сервера' });
       }
     })
     .finally(next);
@@ -35,11 +33,10 @@ module.exports.deleteByIdCard = (req, res, next) => {
   Card.findByIdAndRemove(req.params.id)
     .then((dataCard) => res.status(200).send(dataCard))
     .catch((err) => {
-      if (err.name === 'NotFound') {
-        throw new NotFound('Нет карточки с таким id');
-      }
-      if (err.name === 'ServerError') {
-        throw new ServerError('Ошибка сервера');
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Некорректные данные' });
+      } else {
+        res.status(500).send({ message: 'Ошибка сервера' });
       }
     })
     .finally(next);
@@ -53,11 +50,10 @@ module.exports.likeCard = (req, res, next) => {
   )
     .then((dataCard) => res.status(200).send(dataCard))
     .catch((err) => {
-      if (err.name === 'NotFound') {
-        throw new NotFound('Нет карточки с таким id');
-      }
-      if (err.name === 'ServerError') {
-        throw new ServerError('Ошибка сервера');
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Некорректные данные' });
+      } else {
+        res.status(500).send({ message: 'Ошибка сервера' });
       }
     })
     .finally(next);
@@ -71,11 +67,10 @@ module.exports.dislikeCard = (req, res, next) => {
   )
     .then((dataCard) => res.status(200).send(dataCard))
     .catch((err) => {
-      if (err.name === 'NotFound') {
-        throw new NotFound('Нет карточки с таким id');
-      }
-      if (err.name === 'ServerError') {
-        throw new ServerError('Ошибка сервера');
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Некорректные данные' });
+      } else {
+        res.status(500).send({ message: 'Ошибка сервера' });
       }
     })
     .finally(next);
