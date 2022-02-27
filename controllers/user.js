@@ -32,7 +32,6 @@ module.exports.getByIdUser = (req, res, next) => {
     })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      res.send(err);
       if (err.name === "CastError") {
         res
           .status(404)
