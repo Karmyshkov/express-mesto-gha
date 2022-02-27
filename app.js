@@ -25,8 +25,7 @@ app.use((req, res) => {
 
 mongoose.connect(uri, {
   useNewUrlParser: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
+  useUnifiedTopology: true,
 });
 
 app.listen(PORT);
