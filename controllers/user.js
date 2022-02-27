@@ -50,7 +50,7 @@ module.exports.editProfile = (req, res, next) => {
     { name, about },
     { new: true, runValidators: true }
   )
-    .then((dataUser) => res.status(200).send(dataUser))
+    .then((dataUser) => res.status(200).send({ data: dataUser }))
     .catch((err) => {
       if (err.name === "ValidationError") {
         res.status(400).send({
