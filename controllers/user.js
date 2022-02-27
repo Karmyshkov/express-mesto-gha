@@ -27,7 +27,7 @@ module.exports.createUser = (req, res, next) => {
 
 module.exports.getByIdUser = (req, res, next) => {
   User.findById(req.params.id)
-    .then((user) => res.send(user))
+    .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
         res
