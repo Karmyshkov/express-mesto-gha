@@ -26,6 +26,9 @@ module.exports.createCard = (req, res, next) => {
 
 module.exports.deleteByIdCard = (req, res, next) => {
   Card.findByIdAndRemove(req.params.id)
+    .orFail(() => {
+      res.status(404).send({ message: "Некорректный ID" });
+    })
     .then((dataCard) => res.status(200).send(dataCard))
     .catch((err) => {
       if (err.name === "CastError") {
@@ -69,6 +72,9 @@ module.exports.dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true }
   )
+    .orFail(() => {
+      res.status(404).send({ message: "Некорректный ID" });
+    })
     .then((dataCard) => res.status(200).send({ data: dataCard }))
     .catch((err) => {
       if (err.name === "ValidationError") {
