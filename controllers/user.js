@@ -30,18 +30,15 @@ module.exports.getByIdUser = (req, res, next) => {
     .orFail(() => {
       res.status(400).send({ message: "Некорректный ID" });
     })
-    .then(({ _id }) => {
-      User.findById(_id)
-        .then((user) => res.send(user))
-        .catch((err) => {
-          if (err.name === "CastError") {
-            res
-              .status(404)
-              .send({ message: "Пользователь по указанному _id не найден" });
-          }
-          res.status(500).send({ message: "Ошибка сервера" });
-        })
-        .catch(next);
+    .then((user) => res.status(200).send(user))
+    .catch((err) => {
+      res.send(err);
+      if (err.name === "CastError") {
+        res
+          .status(404)
+          .send({ message: "Пользователь по указанному _id не найден" });
+      }
+      res.status(500).send({ message: "Ошибка сервера" });
     })
     .catch(next);
 };
