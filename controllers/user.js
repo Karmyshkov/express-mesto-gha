@@ -47,7 +47,12 @@ module.exports.editProfile = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(
     id,
-    { name, about },
+    {
+      $set: {
+        name,
+        about,
+      },
+    },
     { new: true, runValidators: true }
   )
     .then((dataUser) => res.status(200).send({ data: dataUser }))
