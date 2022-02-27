@@ -27,14 +27,20 @@ module.exports.createUser = (req, res, next) => {
 
 module.exports.getByIdUser = (req, res, next) => {
   User.findById(req.params.id)
-    .then((user) => res.status(200).send(user))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res
-          .status(404)
-          .send({ message: 'Пользователь по указанному _id не найден' });
-      }
-      res.status(500).send({ message: 'Ошибка сервера' });
+    .orFail(() => {
+      res
+        .status(404)
+        .send({ message: 'Пользователь по указанному _id не найден' });
+    })
+    .then(({ _id }) => {
+      User.findById(_id)
+        .then((user) => res.send(user))
+        .catch((err) => {
+          if (err.name === 'CastError') {
+            res.status(404).send({ message: 'Не правильный ID' });
+          }
+        })
+        .catch(next);
     })
     .catch(next);
 };
@@ -66,11 +72,7 @@ module.exports.editProfile = (req, res, next) => {
 module.exports.editAvatar = (req, res, next) => {
   const id = req.user._id;
   const { avatar } = req.body;
-  User.findByIdAndUpdate(
-    id,
-    { avatar },
-    { new: true, runValidators: true },
-  )
+  User.findByIdAndUpdate(id, { avatar }, { new: true, runValidators: true })
     .then((dataUser) => res.status(200).send(dataUser))
     .catch((err) => {
       if (err.name === 'ValidationError') {
