@@ -56,12 +56,14 @@ module.exports.likeCard = (req, res, next) => {
         res.status(400).send({
           message: "Переданы некорректные данные для постановки лайка",
         });
-      } else if (err.name === "CastError") {
-        res
-          .status(404)
-          .send({ message: "Передан несуществующий _id карточки" });
+      } else {
+        if (err.name === "CastError") {
+          res
+            .status(404)
+            .send({ message: "Передан несуществующий _id карточки" });
+        }
+        res.status(500).send({ message: "Ошибка сервера" });
       }
-      res.status(500).send({ message: "Ошибка сервера" });
     })
     .catch(next);
 };
@@ -78,15 +80,17 @@ module.exports.dislikeCard = (req, res, next) => {
     .then((dataCard) => res.status(200).send({ data: dataCard }))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(400).send({
+        res.status(404).send({
           message: "Переданы некорректные данные для снятии лайка",
         });
-      } else if (err.name === "CastError") {
-        res
-          .status(404)
-          .send({ message: "Передан несуществующий _id карточки" });
+      } else {
+        if (err.name === "CastError") {
+          res
+            .status(400)
+            .send({ message: "Передан несуществующий _id карточки" });
+        }
+        res.status(500).send({ message: "Ошибка сервера" });
       }
-      res.status(500).send({ message: "Ошибка сервера" });
     })
     .catch(next);
 };
