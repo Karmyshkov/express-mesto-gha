@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '620917d44dc4e2fb3bff68ed',
+    _id: '62149e70772c6082b3373106',
   };
 
   next();
@@ -18,6 +18,9 @@ app.use((req, res, next) => {
 
 app.use('/', require('./routes/user'));
 app.use('/', require('./routes/card'));
+app.use((req, res) => {
+  res.status(404).send({ message: 'Страница не найдена' });
+});
 
 mongoose.connect(uri, {
   useNewUrlParser: true,
