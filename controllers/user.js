@@ -1,6 +1,4 @@
-const User = require("../models/User");
-const NotFound = require("../errors/NotFound");
-const BadRequest = require("../errors/BadRequest");
+const User = require('../models/User');
 
 module.exports.getAllUsers = (req, res, next) => {
   User.find({})
@@ -17,28 +15,26 @@ module.exports.createUser = (req, res, next) => {
   })
     .then((dataUser) => res.status(201).send(dataUser))
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        res.status(400).send({ message: "Некорректные данные" });
+      if (err.name === 'ValidationError') {
+        res.status(400).send({
+          message: 'Переданы некорректные данные при создании пользователя',
+        });
       }
-      res.status(500).send({ message: "Ошибка сервера" });
+      res.status(500).send({ message: 'Ошибка сервера' });
     })
     .finally(next);
 };
 
 module.exports.getByIdUser = (req, res, next) => {
   User.findById(req.params.id)
-    .orFail(() => {
-      throw new NotFound("Пользователь с таким ID не существует");
-    })
-    .then(({ _id }) => {
-      User.findById(_id)
-        .then((user) => res.send(user))
-        .catch((err) => {
-          if (err.name === "CastError") {
-            throw new BadRequest("Неверный ID");
-          }
-        })
-        .catch(next);
+    .then((user) => res.send(user))
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res
+          .status(404)
+          .send({ message: 'Пользователь по указанному _id не найден' });
+      }
+      res.status(500).send({ message: 'Ошибка сервера' });
     })
     .catch(next);
 };
@@ -49,13 +45,20 @@ module.exports.editProfile = (req, res, next) => {
   User.findByIdAndUpdate(
     id,
     { name, about },
-    { new: true, runValidators: true, upsert: true }
+    { new: true, runValidators: true, upsert: true },
   )
     .then((dataUser) => res.status(200).send(dataUser))
     .catch((err) => {
-      if (err.name === "ValidationError" || err.name === "CastError") {
-        throw new BadRequest("Некорректные данные");
+      if (err.name === 'ValidationError') {
+        res.status(400).send({
+          message: 'Переданы некорректные данные при обновлении профиля',
+        });
+      } else if (err.name === 'CastError') {
+        res
+          .status(404)
+          .send({ message: 'Пользователь с указанным _id не найден' });
       }
+      res.status(500).send({ message: 'Ошибка сервера' });
     })
     .catch(next);
 };
@@ -70,11 +73,16 @@ module.exports.editAvatar = (req, res, next) => {
   )
     .then((dataUser) => res.status(200).send(dataUser))
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        throw new BadRequest("Ссылка на аватар не корректна");
-      } else if (err.name === "CastError") {
-        throw new BadRequest("Не корректный ID");
+      if (err.name === 'ValidationError') {
+        res.status(400).send({
+          message: 'Переданы некорректные данные при обновлении аватара',
+        });
+      } else if (err.name === 'CastError') {
+        res
+          .status(404)
+          .send({ message: 'Пользователь с указанным _id не найден' });
       }
+      res.status(500).send({ message: 'Ошибка сервера' });
     })
     .catch(next);
 };
