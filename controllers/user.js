@@ -48,10 +48,8 @@ module.exports.editProfile = (req, res, next) => {
   User.findByIdAndUpdate(
     id,
     {
-      $set: {
-        name,
-        about,
-      },
+      name,
+      about,
     },
     { new: true, runValidators: true }
   )
