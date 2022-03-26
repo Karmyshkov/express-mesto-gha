@@ -73,7 +73,7 @@ module.exports.editAvatar = (req, res) => {
   const id = req.user._id;
   const { avatar } = req.body;
   User.findByIdAndUpdate(id, { avatar }, { new: true, runValidators: true })
-    .then((dataUser) => res.status(200).send({ data: dataUser }))
+    .then((dataUser) => res.status(200).send({ data: dataUser._id }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({
