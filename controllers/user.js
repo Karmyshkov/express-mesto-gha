@@ -51,7 +51,7 @@ module.exports.editProfile = (req, res) => {
       name,
       about,
     },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   )
     .then((dataUser) => res.status(200).send({ data: dataUser }))
     .catch((err) => {
