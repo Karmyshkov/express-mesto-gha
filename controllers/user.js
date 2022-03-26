@@ -17,15 +17,16 @@ module.exports.createUser = (req, res) => {
         res.status(400).send({
           message: "Переданы некорректные данные при создании пользователя",
         });
+      } else {
+        res.status(500).send({ message: "Ошибка сервера" });
       }
-      res.status(500).send({ message: "Ошибка сервера" });
     });
 };
 
 module.exports.getByIdUser = (req, res) => {
   User.findById(req.params.id)
     .orFail(() => {
-      res.status(404).send({ message: "Некорректный ID" });
+      throw new Error("NotFound");
     })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
@@ -33,8 +34,11 @@ module.exports.getByIdUser = (req, res) => {
         res
           .status(400)
           .send({ message: "Пользователь по указанному _id не найден" });
+      } else if (err.message === "NotFound") {
+        res.status(404).send({ message: err.message });
+      } else {
+        res.status(500).send({ message: "Ошибка сервера" });
       }
-      res.status(500).send({ message: "Ошибка сервера" });
     });
 };
 
@@ -57,10 +61,11 @@ module.exports.editProfile = (req, res) => {
         });
       } else if (err.name === "CastError") {
         res
-          .status(404)
+          .status(400)
           .send({ message: "Пользователь с указанным _id не найден" });
+      } else {
+        res.status(500).send({ message: "Ошибка сервера" });
       }
-      res.status(500).send({ message: "Ошибка сервера" });
     });
 };
 
@@ -76,9 +81,10 @@ module.exports.editAvatar = (req, res) => {
         });
       } else if (err.name === "CastError") {
         res
-          .status(404)
+          .status(400)
           .send({ message: "Пользователь с указанным _id не найден" });
+      } else {
+        res.status(500).send({ message: "Ошибка сервера" });
       }
-      res.status(500).send({ message: "Ошибка сервера" });
     });
 };
