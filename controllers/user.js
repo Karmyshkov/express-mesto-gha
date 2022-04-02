@@ -15,8 +15,10 @@ module.exports.getAllUsers = (req, res, next) => {
 };
 
 module.exports.createUser = (req, res, next) => {
-  const { name, about, avatar } = req.body;
+  const { email, password, name, about, avatar } = req.body;
   User.create({
+    email,
+    password,
     name,
     about,
     avatar,
