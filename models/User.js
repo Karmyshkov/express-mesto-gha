@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-import validator = require('validator');
+const isEmail = require('validator/lib/isEmail');
 
 const schema = new Schema({
   email: {
@@ -7,10 +7,8 @@ const schema = new Schema({
     required: true,
     unique: true,
     validate: {
-      validator(email) {
-        return validator.isEmail(email);
-      },
-      message: 'Некорректный email',
+      validator: (v) => isEmail(v),
+      message: 'Неправильный формат почты',
     },
   },
   password: {
