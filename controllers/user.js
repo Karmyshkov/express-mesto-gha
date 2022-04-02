@@ -2,6 +2,7 @@ const User = require('../models/User');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const ServerError = require('../errors/ServerError');
+const bcrypt = require('bcrypt');
 
 module.exports.getAllUsers = (req, res, next) => {
   User.find({})
@@ -16,13 +17,15 @@ module.exports.getAllUsers = (req, res, next) => {
 
 module.exports.createUser = (req, res, next) => {
   const { email, password, name, about, avatar } = req.body;
-  User.create({
-    email,
-    password,
-    name,
-    about,
-    avatar,
-  })
+
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      email,
+      password: hash,
+      name,
+      about,
+      avatar,
+    }))
     .then((dataUser) => res.status(201).send(dataUser))
     .catch((err) => {
       if (err.name === 'ValidationError') {
