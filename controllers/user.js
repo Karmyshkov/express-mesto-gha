@@ -1,11 +1,16 @@
-const User = require("../models/User");
-const BadRequestError = require("../errors/BadRequestError");
-const NotFoundError = require("../errors/NotFoundError");
+const User = require('../models/User');
+const BadRequestError = require('../errors/BadRequestError');
+const NotFoundError = require('../errors/NotFoundError');
+const ServerError = require('../errors/ServerError');
 
 module.exports.getAllUsers = (req, res, next) => {
   User.find({})
     .then((dataUsers) => res.status(200).send(dataUsers))
-    .catch(() => new Error())
+    .catch((err) => {
+      if (err) {
+        throw new ServerError('Ошибка сервера');
+      }
+    })
     .catch(next);
 };
 
@@ -18,12 +23,10 @@ module.exports.createUser = (req, res, next) => {
   })
     .then((dataUser) => res.status(201).send(dataUser))
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        throw new BadRequestError(
-          "Переданы некорректные данные при создании пользователя"
-        );
+      if (err.name === 'ValidationError') {
+        throw new BadRequestError('Переданы некорректные данные при создании пользователя');
       } else {
-        throw new Error();
+        throw new ServerError('Ошибка сервера');
       }
     })
     .catch(next);
@@ -32,16 +35,16 @@ module.exports.createUser = (req, res, next) => {
 module.exports.getByIdUser = (req, res, next) => {
   User.findById(req.params.id)
     .orFail(() => {
-      throw new Error("NotFound");
+      throw new Error('NotFound');
     })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.name === "CastError") {
-        throw new BadRequestError("Пользователь по указанному _id не найден");
-      } else if (err.message === "NotFound") {
-        throw new NotFoundError("Карточка с указанным _id не найдена");
+      if (err.name === 'CastError') {
+        throw new BadRequestError('Пользователь по указанному _id не найден');
+      } else if (err.message === 'NotFound') {
+        throw new NotFoundError('Карточка с указанным _id не найдена');
       } else {
-        throw new Error();
+        throw new ServerError('Ошибка сервера');
       }
     })
     .catch(next);
@@ -56,18 +59,16 @@ module.exports.editProfile = (req, res, next) => {
       name,
       about,
     },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   )
     .then((dataUser) => res.status(200).send({ data: dataUser }))
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        throw new BadRequestError(
-          "Переданы некорректные данные при обновлении профиля"
-        );
-      } else if (err.name === "CastError") {
-        throw new BadRequestError("Пользователь с указанным _id не найден");
+      if (err.name === 'ValidationError') {
+        throw new BadRequestError('Переданы некорректные данные при обновлении профиля');
+      } else if (err.name === 'CastError') {
+        throw new BadRequestError('Пользователь с указанным _id не найден');
       } else {
-        throw new Error();
+        throw new ServerError('Ошибка сервера');
       }
     })
     .catch(next);
@@ -79,14 +80,12 @@ module.exports.editAvatar = (req, res, next) => {
   User.findByIdAndUpdate(id, { avatar }, { new: true, runValidators: true })
     .then((dataUser) => res.status(200).send({ data: dataUser }))
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        throw new BadRequestError(
-          "Переданы некорректные данные при обновлении аватара"
-        );
-      } else if (err.name === "CastError") {
-        throw new BadRequestError("Пользователь с указанным _id не найден");
+      if (err.name === 'ValidationError') {
+        throw new BadRequestError('Переданы некорректные данные при обновлении аватара');
+      } else if (err.name === 'CastError') {
+        throw new BadRequestError('Пользователь с указанным _id не найден');
       } else {
-        throw new Error();
+        throw new ServerError('Ошибка сервера');
       }
     })
     .catch(next);
