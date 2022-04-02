@@ -23,9 +23,8 @@ module.exports.createCard = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new BadRequestError('Переданы некорректные данные при создании карточки');
-      } else {
-        throw new ServerError();
       }
+      throw new ServerError();
     })
     .catch(next);
 };
@@ -41,9 +40,8 @@ module.exports.deleteByIdCard = (req, res, next) => {
         throw new BadRequestError('Карточка с указанным _id не найдена');
       } else if (err.message === 'NotFound') {
         throw new NotFoundError('Карточка с указанным _id не найдена');
-      } else {
-        throw new ServerError();
       }
+      throw new ServerError();
     })
     .catch(next);
 };
@@ -63,9 +61,8 @@ module.exports.likeCard = (req, res, next) => {
         throw new BadRequestError('Передан несуществующий _id карточки');
       } else if (err.message === 'NotFound') {
         throw new NotFoundError('Карточка с указанным _id не найдена');
-      } else {
-        throw new ServerError();
       }
+      throw new ServerError();
     })
     .catch(next);
 };
@@ -85,9 +82,8 @@ module.exports.dislikeCard = (req, res, next) => {
         throw new BadRequestError('Передан несуществующий _id карточки');
       } else if (err.message === 'NotFound') {
         throw new NotFoundError('Карточка с указанным _id не найдена');
-      } else {
-        throw new ServerError();
       }
+      throw new ServerError();
     })
     .catch(next);
 };
