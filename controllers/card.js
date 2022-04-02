@@ -8,7 +8,7 @@ module.exports.getAllCards = (req, res, next) => {
     .then((dataCards) => res.status(200).send(dataCards))
     .catch((err) => {
       if (err) {
-        throw new ServerError('Ошибка сервера');
+        throw new ServerError();
       }
     })
     .catch(next);
@@ -24,7 +24,7 @@ module.exports.createCard = (req, res, next) => {
       if (err.name === 'ValidationError') {
         throw new BadRequestError('Переданы некорректные данные при создании карточки');
       } else {
-        throw new ServerError('Ошибка сервера');
+        throw new ServerError();
       }
     })
     .catch(next);
@@ -42,7 +42,7 @@ module.exports.deleteByIdCard = (req, res, next) => {
       } else if (err.message === 'NotFound') {
         throw new NotFoundError('Карточка с указанным _id не найдена');
       } else {
-        throw new ServerError('Ошибка сервера');
+        throw new ServerError();
       }
     })
     .catch(next);
@@ -64,7 +64,7 @@ module.exports.likeCard = (req, res, next) => {
       } else if (err.message === 'NotFound') {
         throw new NotFoundError('Карточка с указанным _id не найдена');
       } else {
-        throw new ServerError('Ошибка сервера');
+        throw new ServerError();
       }
     })
     .catch(next);
@@ -86,7 +86,7 @@ module.exports.dislikeCard = (req, res, next) => {
       } else if (err.message === 'NotFound') {
         throw new NotFoundError('Карточка с указанным _id не найдена');
       } else {
-        throw new ServerError('Ошибка сервера');
+        throw new ServerError();
       }
     })
     .catch(next);

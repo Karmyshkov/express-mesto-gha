@@ -8,7 +8,7 @@ module.exports.getAllUsers = (req, res, next) => {
     .then((dataUsers) => res.status(200).send(dataUsers))
     .catch((err) => {
       if (err) {
-        throw new ServerError('Ошибка сервера');
+        throw new ServerError();
       }
     })
     .catch(next);
@@ -26,7 +26,7 @@ module.exports.createUser = (req, res, next) => {
       if (err.name === 'ValidationError') {
         throw new BadRequestError('Переданы некорректные данные при создании пользователя');
       } else {
-        throw new ServerError('Ошибка сервера');
+        throw new ServerError();
       }
     })
     .catch(next);
@@ -44,7 +44,7 @@ module.exports.getByIdUser = (req, res, next) => {
       } else if (err.message === 'NotFound') {
         throw new NotFoundError('Карточка с указанным _id не найдена');
       } else {
-        throw new ServerError('Ошибка сервера');
+        throw new ServerError();
       }
     })
     .catch(next);
@@ -68,7 +68,7 @@ module.exports.editProfile = (req, res, next) => {
       } else if (err.name === 'CastError') {
         throw new BadRequestError('Пользователь с указанным _id не найден');
       } else {
-        throw new ServerError('Ошибка сервера');
+        throw new ServerError();
       }
     })
     .catch(next);
@@ -85,7 +85,7 @@ module.exports.editAvatar = (req, res, next) => {
       } else if (err.name === 'CastError') {
         throw new BadRequestError('Пользователь с указанным _id не найден');
       } else {
-        throw new ServerError('Ошибка сервера');
+        throw new ServerError();
       }
     })
     .catch(next);
