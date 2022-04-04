@@ -26,7 +26,7 @@ module.exports.login = (req, res, next) => {
       if (!user) {
         throw new BadRequestError("Неправильный логин или пароль");
       }
-      return User.findOne({ email }.select("+password"));
+      return User.findOne({ email }, "+password");
     })
     .then((user) => {
       const matched = bcrypt.compare(password, user.password);
@@ -37,7 +37,7 @@ module.exports.login = (req, res, next) => {
         throw new UnauthorizedError("Неправильный логин или пароль");
       }
 
-      const token = jwt.sign({ _id: user._id }, "some-secret-key", {
+      const token = jwt.sign({ _id: user._id }, process.env.SECRET_KEY, {
         expiresIn: "7d",
       });
       res.send(token);
