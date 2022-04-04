@@ -18,20 +18,33 @@ module.exports.getAllUsers = (req, res, next) => {
 module.exports.createUser = (req, res, next) => {
   const { email, password, name, about, avatar } = req.body;
 
-  bcrypt.hash(password, 10)
-    .then((hash) => User.create({
-      email,
-      password: hash,
-      name,
-      about,
-      avatar,
-    }))
-    .then((dataUser) => res.status(201).send(dataUser))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные при создании пользователя');
+  User.findOne({ email })
+    .then((user) => {
+      if (user) {
+        throw new BadRequestError(`Пользователь с ${email} существует`);
       }
-      throw new ServerError();
+    })
+    .then(() => {
+      bcrypt
+        .hash(password, 10)
+        .then((hash) =>
+          User.create({
+            email,
+            password: hash,
+            name,
+            about,
+            avatar,
+          })
+        )
+        .then((dataUser) => res.status(201).send(dataUser))
+        .catch((err) => {
+          if (err.name === 'ValidationError') {
+            throw new BadRequestError(
+              'Переданы некорректные данные при создании пользователя'
+            );
+          }
+          throw new ServerError();
+        });
     })
     .catch(next);
 };
@@ -62,12 +75,14 @@ module.exports.editProfile = (req, res, next) => {
       name,
       about,
     },
-    { new: true, runValidators: true },
+    { new: true, runValidators: true }
   )
     .then((dataUser) => res.status(200).send({ data: dataUser }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные при обновлении профиля');
+        throw new BadRequestError(
+          'Переданы некорректные данные при обновлении профиля'
+        );
       } else if (err.name === 'CastError') {
         throw new BadRequestError('Пользователь с указанным _id не найден');
       }
@@ -83,7 +98,9 @@ module.exports.editAvatar = (req, res, next) => {
     .then((dataUser) => res.status(200).send({ data: dataUser }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные при обновлении аватара');
+        throw new BadRequestError(
+          'Переданы некорректные данные при обновлении аватара'
+        );
       } else if (err.name === 'CastError') {
         throw new BadRequestError('Пользователь с указанным _id не найден');
       }
