@@ -25,9 +25,12 @@ module.exports.login = (req, res, next) => {
       if (!user) {
         throw new BadRequestError("Неправильные почта или пароль");
       }
-      return bcrypt.compare(password, user.password);
+      return User.findOne({ email }, "+password");
     })
-    .then((matched) => {
+    .then((user) => {
+      return { user, matched: bcrypt.compare(password, user.password) };
+    })
+    .then(({ user, matched }) => {
       if (!matched) {
         throw new UnauthorizedError("Неправильные почта или пароль");
       }
