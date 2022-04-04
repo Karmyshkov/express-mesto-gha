@@ -3,6 +3,7 @@ const BadRequestError = require("../errors/BadRequestError");
 const NotFoundError = require("../errors/NotFoundError");
 const ServerError = require("../errors/ServerError");
 const UnauthorizedError = require("../errors/UnauthorizedError");
+const ConflictError = require("../errors/ConflictError");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -25,7 +26,7 @@ module.exports.login = (req, res, next) => {
       if (!user) {
         throw new BadRequestError("Неправильный логин или пароль");
       }
-      return User.findOne({ email }, "+password");
+      return User.findOne({ email }.select("+password"));
     })
     .then((user) => {
       const matched = bcrypt.compare(password, user.password);
@@ -50,7 +51,7 @@ module.exports.createUser = (req, res, next) => {
   User.findOne({ email })
     .then((user) => {
       if (user) {
-        throw new BadRequestError(`Пользователь с ${email} существует`);
+        throw new ConflictError(`Пользователь с ${email} существует`);
       }
     })
     .then(() => {
