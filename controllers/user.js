@@ -23,16 +23,17 @@ module.exports.login = (req, res, next) => {
   User.findOne({ email })
     .then((user) => {
       if (!user) {
-        throw new BadRequestError("Неправильные почта или пароль");
+        throw new BadRequestError("Неправильный логин или пароль");
       }
       return User.findOne({ email }, "+password");
     })
     .then((user) => {
-      return { user, matched: bcrypt.compare(password, user.password) };
+      const matched = bcrypt.compare(password, user.password);
+      return { user, matched };
     })
     .then(({ user, matched }) => {
       if (!matched) {
-        throw new UnauthorizedError("Неправильные почта или пароль");
+        throw new UnauthorizedError("Неправильный логин или пароль");
       }
 
       const token = jwt.sign({ _id: user._id }, "some-secret-key", {
