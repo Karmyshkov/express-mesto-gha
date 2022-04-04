@@ -10,6 +10,8 @@ app.use(bodyParser.json());
 
 app.post("/signin", require("./controllers/user").login);
 app.post("/signup", require("./controllers/user").createUser);
+
+app.use(require("./middlewares/auth"));
 app.use("/", require("./routes/user"));
 app.use("/", require("./routes/card"));
 app.use(require("./middlewares/errorHandler"));
