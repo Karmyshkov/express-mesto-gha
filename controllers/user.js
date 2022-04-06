@@ -84,7 +84,7 @@ const createUser = (req, res, next) => {
 };
 
 const getByIdUser = (req, res, next) => {
-  User.findById(req.params.id)
+  User.findById(req.params.userId)
     .orFail(() => {
       throw new Error('NotFound');
     })

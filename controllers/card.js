@@ -33,7 +33,7 @@ const createCard = (req, res, next) => {
 };
 
 const deleteByIdCard = (req, res, next) => {
-  Card.findById(req.params.id)
+  Card.findById(req.params.cardId)
     .orFail(() => {
       throw new Error('NotFound');
     })
@@ -41,7 +41,7 @@ const deleteByIdCard = (req, res, next) => {
       if (card.owner.toString() !== req.user._id) {
         throw new ForbiddenError('Нет прав');
       }
-      return Card.findByIdAndRemove(req.params.id)
+      return Card.findByIdAndRemove(req.params.cardId)
         .orFail(() => {
           throw new Error('NotFound');
         })
