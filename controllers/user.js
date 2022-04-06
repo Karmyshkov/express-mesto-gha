@@ -6,6 +6,8 @@ const NotFoundError = require('../errors/NotFoundError');
 const ServerError = require('../errors/ServerError');
 const ConflictError = require('../errors/ConflictError');
 
+const { SECRET_KEY = 'SECRET_KEY_TEST' } = process.env;
+
 const getAllUsers = (req, res, next) => {
   User.find({})
     .then((dataUsers) => res.status(200).send(dataUsers))
@@ -22,7 +24,7 @@ const login = (req, res, next) => {
 
   User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, process.env.SECRET_KEY, {
+      const token = jwt.sign({ _id: user._id }, SECRET_KEY, {
         expiresIn: '7d',
       });
       res
