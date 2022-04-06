@@ -10,7 +10,7 @@ const {
 const { login, createUser } = require('./controllers/user');
 require('dotenv').config();
 
-const { URI = 'mongodb://localhost:27017/mestodb' } = process.env;
+const { URI = 'mongodb://localhost:27017/mestodb', PORT = 3000 } = process.env;
 
 const app = express();
 
@@ -34,4 +34,4 @@ mongoose.connect(URI, {
   useUnifiedTopology: true,
 });
 
-app.listen(process.env.PORT);
+app.listen(PORT);
