@@ -21,7 +21,7 @@ app.post('/signup', createUserValidate, createUser);
 app.use('/', auth, require('./routes/user'));
 app.use('/', auth, require('./routes/card'));
 
-app.use(() => {
+app.use(auth, () => {
   throw new NotFoundError();
 });
 
