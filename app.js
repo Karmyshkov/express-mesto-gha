@@ -3,7 +3,11 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const NotFoundError = require("./errors/NotFoundError");
 const auth = require("./middlewares/auth");
-const middleware = require("./middlewares/validation");
+const {
+  loginValidate,
+  createUserValidate,
+} = require("./middlewares/validation");
+const { login, createUser } = require("./controllers/user");
 require("dotenv").config();
 
 const app = express();
@@ -11,16 +15,8 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.post(
-  "/signin",
-  middleware.loginValidate,
-  require("./controllers/user").login
-);
-app.post(
-  "/signup",
-  middleware.createUserValidate,
-  require("./controllers/user").createUser
-);
+app.post("/signin", loginValidate, login);
+app.post("/signup", createUserValidate, createUser);
 
 app.use("/", auth, require("./routes/user"));
 app.use("/", auth, require("./routes/card"));
