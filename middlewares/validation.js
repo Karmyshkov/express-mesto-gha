@@ -55,7 +55,7 @@ const editProfileValidate = celebrate({
 
 const editAvatarValidate = celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().custom(checkValidURL),
+    avatar: Joi.string().custom(checkValidURL).required(),
   }),
 });
 
