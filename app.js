@@ -10,6 +10,8 @@ const {
 const { login, createUser } = require('./controllers/user');
 require('dotenv').config();
 
+const { URI = 'mongodb://localhost:27017/mestodb' } = process.env;
+
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,7 +29,7 @@ app.use(auth, () => {
 
 app.use(require('./middlewares/errorHandler'));
 
-mongoose.connect(process.env.URI, {
+mongoose.connect(URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
