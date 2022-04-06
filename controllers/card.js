@@ -41,7 +41,7 @@ const deleteByIdCard = (req, res, next) => {
       if (card.owner.toString() !== req.user._id) {
         throw new ForbiddenError('Нет прав');
       }
-      Card.findByIdAndRemove(req.params.id)
+      return Card.findByIdAndRemove(req.params.id)
         .orFail(() => {
           throw new Error('NotFound');
         })
