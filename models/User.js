@@ -1,5 +1,7 @@
-const { Schema, model } = require("mongoose");
-const validator = require("validator");
+const { Schema, model } = require('mongoose');
+const bcrypt = require('bcrypt');
+const validator = require('validator');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const schema = new Schema({
   email: {
@@ -8,7 +10,7 @@ const schema = new Schema({
     unique: true,
     validate: {
       validator: (email) => validator.isEmail(email),
-      message: "Неправильный формат почты",
+      message: 'Неправильный формат почты',
     },
   },
   password: {
@@ -21,25 +23,39 @@ const schema = new Schema({
     required: false,
     minlength: 2,
     maxlength: 30,
-    default: "Жак-Ив Кусто",
+    default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
     required: false,
     minlength: 2,
     maxlength: 30,
-    default: "Исследователь",
+    default: 'Исследователь',
   },
   avatar: {
     type: String,
     required: false,
     default:
-      "https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png",
+      'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
       validator: (url) => validator.isURL(url),
-      message: "Введён некорректный URL",
+      message: 'Введён некорректный URL',
     },
   },
 });
 
-module.exports = model("User", schema);
+schema.statics.findUserByCredentials = function (email, password) {
+  return this.findOne({ email }, '+password').then((user) => {
+    if (!user) {
+      throw new UnauthorizedError();
+    }
+    return bcrypt.compare(password, user.password).then((matched) => {
+      if (!matched) {
+        throw new UnauthorizedError();
+      }
+      return user;
+    });
+  });
+};
+
+module.exports = model('User', schema);
