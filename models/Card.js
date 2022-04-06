@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const validator = require('validator');
 
 const schema = new Schema({
   name: {
@@ -10,6 +11,10 @@ const schema = new Schema({
   link: {
     type: String,
     required: true,
+    validate: {
+      validator: (url) => validator.isURL(url),
+      message: 'Введён некорректный URL',
+    },
   },
   owner: {
     required: true,
