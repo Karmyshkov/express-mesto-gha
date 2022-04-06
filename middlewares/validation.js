@@ -1,17 +1,17 @@
-const { celebrate, Joi } = require("celebrate");
-const validator = require("validator");
-const BadRequestError = require("../errors/BadRequestError");
+const { celebrate, Joi } = require('celebrate');
+const validator = require('validator');
+const BadRequestError = require('../errors/BadRequestError');
 
 const checkValidEmail = (value) => {
   if (!validator.isEmail(value)) {
-    throw new BadRequestError("Некорректный email");
+    throw new BadRequestError('Некорректный email');
   }
   return value;
 };
 
 const checkValidURL = (value) => {
   if (!validator.isURL(value)) {
-    throw new BadRequestError("Некорректный URL");
+    throw new BadRequestError('Некорректный URL');
   }
   return value;
 };

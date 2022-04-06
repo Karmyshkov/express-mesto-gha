@@ -44,6 +44,7 @@ const schema = new Schema({
   },
 });
 
+// eslint-disable-next-line func-names
 schema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }, '+password').then((user) => {
     if (!user) {
