@@ -6,7 +6,7 @@ const NotFoundError = require('../errors/NotFoundError');
 const ServerError = require('../errors/ServerError');
 const ConflictError = require('../errors/ConflictError');
 
-const { SECRET_KEY = 'SECRET_KEY_TEST' } = process.env;
+const { NODE_ENV = 'development', SECRET_KEY } = process.env;
 
 const getAllUsers = (req, res, next) => {
   User.find({})
@@ -24,9 +24,13 @@ const login = (req, res, next) => {
 
   User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, SECRET_KEY, {
-        expiresIn: '7d',
-      });
+      const token = jwt.sign(
+        { _id: user._id },
+        NODE_ENV === 'development' ? 'SECRET_KEY_TEST' : SECRET_KEY,
+        {
+          expiresIn: '7d',
+        },
+      );
       res
         .cookie('jwt', token, {
           maxAge: 3600000 * 24 * 7,
