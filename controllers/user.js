@@ -86,14 +86,12 @@ const createUser = (req, res, next) => {
 const getByIdUser = (req, res, next) => {
   User.findById(req.params.userId)
     .orFail(() => {
-      throw new Error('NotFound');
+      throw new NotFoundError('Карточка с указанным _id не найдена');
     })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new BadRequestError('Пользователь по указанному _id не найден');
-      } else if (err.message === 'NotFound') {
-        throw new NotFoundError('Карточка с указанным _id не найдена');
       }
       throw new ServerError();
     })
