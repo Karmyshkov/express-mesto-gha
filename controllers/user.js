@@ -85,6 +85,8 @@ const getByIdUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new BadRequestError('Пользователь по указанному _id не найден');
+      } else {
+        next(err);
       }
     })
     .catch(next);
@@ -109,6 +111,8 @@ const editProfile = (req, res, next) => {
         );
       } else if (err.name === 'CastError') {
         throw new BadRequestError('Пользователь с указанным _id не найден');
+      } else {
+        next(err);
       }
     })
     .catch(next);
@@ -126,6 +130,8 @@ const editAvatar = (req, res, next) => {
         );
       } else if (err.name === 'CastError') {
         throw new BadRequestError('Пользователь с указанным _id не найден');
+      } else {
+        next(err);
       }
     })
     .catch(next);
