@@ -2,16 +2,10 @@ const Card = require('../models/Card');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
-const ServerError = require('../errors/ServerError');
 
 const getAllCards = (req, res, next) => {
   Card.find({})
     .then((dataCards) => res.status(200).send(dataCards))
-    .catch((err) => {
-      if (err) {
-        throw new ServerError();
-      }
-    })
     .catch(next);
 };
 
@@ -27,7 +21,6 @@ const createCard = (req, res, next) => {
           'Переданы некорректные данные при создании карточки',
         );
       }
-      throw new ServerError();
     })
     .catch(next);
 };
@@ -56,7 +49,6 @@ const deleteByIdCard = (req, res, next) => {
       if (err.name === 'CastError') {
         throw new BadRequestError('Карточка с указанным _id не найдена');
       }
-      throw new ServerError();
     })
     .catch(next);
 };
@@ -75,7 +67,6 @@ const likeCard = (req, res, next) => {
       if (err.name === 'CastError') {
         throw new BadRequestError('Передан несуществующий _id карточки');
       }
-      throw new ServerError();
     })
     .catch(next);
 };
@@ -94,7 +85,6 @@ const dislikeCard = (req, res, next) => {
       if (err.name === 'CastError') {
         throw new BadRequestError('Передан несуществующий _id карточки');
       }
-      throw new ServerError();
     })
     .catch(next);
 };

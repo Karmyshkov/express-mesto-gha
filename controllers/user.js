@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
-const ServerError = require('../errors/ServerError');
 const ConflictError = require('../errors/ConflictError');
 
 const { NODE_ENV = 'development', SECRET_KEY } = process.env;
@@ -11,11 +10,6 @@ const { NODE_ENV = 'development', SECRET_KEY } = process.env;
 const getAllUsers = (req, res, next) => {
   User.find({})
     .then((dataUsers) => res.status(200).send(dataUsers))
-    .catch((err) => {
-      if (err) {
-        throw new ServerError();
-      }
-    })
     .catch(next);
 };
 
@@ -77,7 +71,6 @@ const createUser = (req, res, next) => {
               'Переданы некорректные данные при создании пользователя',
             );
           }
-          throw new ServerError();
         });
     })
     .catch(next);
@@ -93,7 +86,6 @@ const getByIdUser = (req, res, next) => {
       if (err.name === 'CastError') {
         throw new BadRequestError('Пользователь по указанному _id не найден');
       }
-      throw new ServerError();
     })
     .catch(next);
 };
@@ -118,7 +110,6 @@ const editProfile = (req, res, next) => {
       } else if (err.name === 'CastError') {
         throw new BadRequestError('Пользователь с указанным _id не найден');
       }
-      throw new ServerError();
     })
     .catch(next);
 };
@@ -136,7 +127,6 @@ const editAvatar = (req, res, next) => {
       } else if (err.name === 'CastError') {
         throw new BadRequestError('Пользователь с указанным _id не найден');
       }
-      throw new ServerError();
     })
     .catch(next);
 };
