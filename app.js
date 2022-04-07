@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const { errors } = require('celebrate');
 const cookieParser = require('cookie-parser');
 const NotFoundError = require('./errors/NotFoundError');
 const auth = require('./middlewares/auth');
@@ -29,6 +30,8 @@ app.use('/', auth, require('./routes/card'));
 app.use(auth, () => {
   throw new NotFoundError();
 });
+
+app.use(errors());
 
 app.use(require('./middlewares/errorHandler'));
 
