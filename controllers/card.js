@@ -35,7 +35,7 @@ const createCard = (req, res, next) => {
 const deleteByIdCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .orFail(() => {
-      throw new Error('NotFound');
+      throw new NotFoundError('Карточка с указанным _id не найдена');
     })
     .then((card) => {
       if (card.owner.toString() !== req.user._id) {
@@ -43,7 +43,7 @@ const deleteByIdCard = (req, res, next) => {
       }
       return Card.findByIdAndRemove(req.params.cardId)
         .orFail(() => {
-          throw new Error('NotFound');
+          throw new NotFoundError('Карточка с указанным _id не найдена');
         })
         .then((dataCard) => {
           if (dataCard.owner.toString() !== req.user._id) {
@@ -55,8 +55,6 @@ const deleteByIdCard = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new BadRequestError('Карточка с указанным _id не найдена');
-      } else if (err.message === 'NotFound') {
-        throw new NotFoundError('Карточка с указанным _id не найдена');
       }
       throw new ServerError();
     })
@@ -70,14 +68,12 @@ const likeCard = (req, res, next) => {
     { new: true },
   )
     .orFail(() => {
-      throw new Error('NotFound');
+      throw new NotFoundError('Карточка с указанным _id не найдена');
     })
     .then((dataCard) => res.status(200).send({ data: dataCard }))
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new BadRequestError('Передан несуществующий _id карточки');
-      } else if (err.message === 'NotFound') {
-        throw new NotFoundError('Карточка с указанным _id не найдена');
       }
       throw new ServerError();
     })
@@ -91,14 +87,12 @@ const dislikeCard = (req, res, next) => {
     { new: true },
   )
     .orFail(() => {
-      throw new Error('NotFound');
+      throw new NotFoundError('Карточка с указанным _id не найдена');
     })
     .then((dataCard) => res.status(200).send({ data: dataCard }))
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new BadRequestError('Передан несуществующий _id карточки');
-      } else if (err.message === 'NotFound') {
-        throw new NotFoundError('Карточка с указанным _id не найдена');
       }
       throw new ServerError();
     })
